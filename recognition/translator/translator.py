@@ -66,9 +66,8 @@ class Translator (threading.Thread) :
         return json.loads(json_data)['access_token'] 
 
     def dump_res(self,buf): 
-        #buf = eval(buf)
-        #logger.info(str(buf.get('result')))
-        logger.info(buf)
+        buf = json.loads(buf)
+        print buf.get('result')[0]
         
     def readQ(self,queue):
         val = queue.get(1)
