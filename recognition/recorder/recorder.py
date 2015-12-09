@@ -4,6 +4,7 @@ from datetime import datetime
 import wave,Queue
 from logger import logger
 import threading ,time
+import numpy as np
 
 class Recorder(threading.Thread):
     def __init__(self, wav_queue):
@@ -15,10 +16,14 @@ class Recorder(threading.Thread):
         self.channels = 1 
         self.sampwidth = 2 
         #record time 
-        self.TIME = 5
+        self.TIME = 2
         self.LEVEL=1000
         self.wav_queue=wav_queue
         self.file_name_index=1
+        self.mute_count_limit=30
+        self.mute_begin=0
+        self.mute_end=1
+        self.not_mute=0
     def run(self):
         while True:
             self.record_wave()
@@ -33,7 +38,7 @@ class Recorder(threading.Thread):
         wf.close() 
     def writeQ(self,queue,data):
         queue.put(data, 1)
-        logger.info("当前有%s个录音准备翻译" % queue.qsize())
+        #logger.info("当前有%s个录音准备翻译" % queue.qsize())
     def record_wave(self):
         #open the input of wave 
         pa = PyAudio() 
@@ -42,10 +47,31 @@ class Recorder(threading.Thread):
         frames_per_buffer = self.NUM_SAMPLES) 
         save_buffer = [] 
         count = 0 
-        while count < self.TIME*2:
-            string_audio_data = stream.read(self.NUM_SAMPLES) 
-            save_buffer.append(string_audio_data) 
-            count += 1 
+        while count < self.TIME*5:
+            string_audio_data = stream.read(self.NUM_SAMPLES)
+            audio_data = np.fromstring(string_audio_data, dtype=np.short)
+            large_sample_count = np.sum( audio_data > self.LEVEL )
+            print large_sample_count
+            #print 'mute_begin' + str(self.mute_begin)
+            #print 'mute_end' + str(self.mute_end)
+            #未开始计时，出现静音
+            # 如果当前音量小于设置的静音阈值（也就是最大静音值）
+            if large_sample_count < self.mute_count_limit :
+                # 初始化静音计数
+                self.mute_begin=1
+            else:
+                # 如果有声音出现
+                save_buffer.append(string_audio_data)  
+                self.mute_begin=0
+                self.mute_end=1
+            count += 1
+            if (self.mute_end - self.mute_begin) > 5:
+                self.mute_begin=0
+                self.mute_end=1
+                break
+            # 如果有声音      
+            if self.mute_begin:
+                self.mute_end+=1  
         
         save_buffer=save_buffer[:]
         if save_buffer:
@@ -57,13 +83,11 @@ class Recorder(threading.Thread):
             self.save_wave_file(filename=filename, data=save_buffer)
             self.writeQ(queue=self.wav_queue, data=filename)
             self.file_name_index+=1
-            #print filename,'saved'
-        else:
-            logger.info("文件未保存") 
 
         save_buffer = []
-        stream.close()#在嵌入式设备上必须加这一句，否则只能录音一次，下次录音时提示stram overflow 错误。
-        logger.info("录音结束")
+        #在嵌入式设备上必须加这一句，否则只能录音一次，下次录音时提示stram overflow 错误。
+        stream.close()
+        #logger.info("录音结束")
 def start(wav_queue):
     recorder=Recorder(wav_queue)
     # 父进程结束时，子进程也结束。

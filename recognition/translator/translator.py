@@ -20,7 +20,7 @@ class Translator (threading.Thread) :
             time.sleep(0.5)
             if self.wav_queue.qsize():
                 filename=self.readQ(queue=self.wav_queue)
-                logger.info('正在解析[%s]' % filename)
+                #logger.info('正在解析[%s]' % filename)
             else:
                 continue
             fp = wave.open(filename, 'rb') 
@@ -67,7 +67,10 @@ class Translator (threading.Thread) :
 
     def dump_res(self,buf): 
         buf = json.loads(buf)
-        print buf.get('result')[0]
+        if buf.get('result'):
+            print 'margin : ' + buf.get('result')[0]
+        else:
+            pass
         
     def readQ(self,queue):
         val = queue.get(1)
