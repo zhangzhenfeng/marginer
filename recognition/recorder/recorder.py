@@ -9,6 +9,7 @@ import numpy as np
 class Recorder(threading.Thread):
     def __init__(self, wav_queue):
         threading.Thread.__init__(self)
+        logger.info("初始化Recorder")
         #define of params 
         self.NUM_SAMPLES = 2000 
         self.framerate = 8000 
@@ -17,11 +18,15 @@ class Recorder(threading.Thread):
         self.sampwidth = 2 
         #record time 
         self.TIME = 2
-        self.LEVEL=1000
+        # 静音阈值，过滤噪音使用
+        self.LEVEL=300
+        # 一帧数据数据的有效数据，也就是一帧数据中有多少大于LEVEL的数
+        self.mute_count_limit=50
         self.wav_queue=wav_queue
         self.file_name_index=1
-        self.mute_count_limit=30
+        # 标记是否是静音
         self.mute_begin=0
+        # 静音时长
         self.mute_end=1
         self.not_mute=0
     def run(self):
@@ -50,26 +55,33 @@ class Recorder(threading.Thread):
         while count < self.TIME*5:
             string_audio_data = stream.read(self.NUM_SAMPLES)
             audio_data = np.fromstring(string_audio_data, dtype=np.short)
+            # 得到audio_data中大约level的数据个数
             large_sample_count = np.sum( audio_data > self.LEVEL )
             print large_sample_count
             #print 'mute_begin' + str(self.mute_begin)
             #print 'mute_end' + str(self.mute_end)
             #未开始计时，出现静音
-            # 如果当前音量小于设置的静音阈值（也就是最大静音值）
+            # 如果一帧数据数据的有效数据小于mute_count_limit，则认为是静音
             if large_sample_count < self.mute_count_limit :
                 # 初始化静音计数
                 self.mute_begin=1
             else:
                 # 如果有声音出现
                 save_buffer.append(string_audio_data)  
+                # 静音标记为否
                 self.mute_begin=0
+                # 静音时长为0
                 self.mute_end=1
             count += 1
-            if (self.mute_end - self.mute_begin) > 5:
+            # 如果静音时长大于5
+            if (self.mute_end - self.mute_begin) > 2:
+                # 还原变量
                 self.mute_begin=0
+                # 还原变量
                 self.mute_end=1
+                # 结束本次从声卡取值，本次录音结束
                 break
-            # 如果有声音      
+            # 如果是静音，那么自增静音时长mute_end
             if self.mute_begin:
                 self.mute_end+=1  
         

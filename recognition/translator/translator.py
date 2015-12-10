@@ -1,21 +1,26 @@
 # -*- coding: utf-8 -*-
-import urllib, urllib2, pycurl 
 import base64 
 import json ,threading
 import wave,time
 from logger import logger
+from network.baiduApi import BaiduApi
+from network.httpRequest import HttpRequest
+from analysis.analysiser import Analysiser
 
 class Translator (threading.Thread) :
     """docstring for myThread"""
-    def __init__(self,wav_queue):
+    def __init__(self,wav_queue,token):
+        logger.info("初始化Translator")
         threading.Thread.__init__(self)
         self.wav_queue = wav_queue
+        self.token = token
     def run(self):
-        self.use_cloud()
+        self.use_cloud(self.token)
         
     ## post audio to server 
-    def use_cloud(self):
-        token = self.get_token()
+    def use_cloud(self,token):
+        # 获取http服务
+        httpRequest = HttpRequest()
         while True:
             time.sleep(0.5)
             if self.wav_queue.qsize():
@@ -34,52 +39,57 @@ class Translator (threading.Thread) :
             'Content-Type: audio/pcm; rate=8000', 
             'Content-Length: %d' % f_len 
             ] 
+            # 进行翻译
+            httpRequest.send(srv_url=srv_url,http_header=http_header,call_back_func=self.call_back_func,
+                             data=audio_data,data_len=f_len)
             
-            c = pycurl.Curl() 
-            # 请求的url
-            c.setopt(pycurl.URL, str(srv_url)) #curl doesn't support unicode 
-            #c.setopt(c.RETURNTRANSFER, 1) 
-            # 设置请求头
-            c.setopt(c.HTTPHEADER, http_header) #must be list, not dict
-            # post请求
-            c.setopt(c.POST, 1) 
-            # 超时时间
-            c.setopt(c.CONNECTTIMEOUT, 30) 
-            # 超时时间
-            c.setopt(c.TIMEOUT, 30) 
-            # 输出方式
-            c.setopt(c.WRITEFUNCTION, self.dump_res) 
-            # 发送的内容
-            c.setopt(c.POSTFIELDS, audio_data) 
-            # 内容长度
-            c.setopt(c.POSTFIELDSIZE, f_len) 
-            # 开始请求
-            c.perform() #pycurl.perform() has no return val
-    def get_token(self): 
-        apiKey = "Qa6vDpKF8eFiWjXFrC3erMcl" 
-        secretKey = "cf8cdca9e7a792919bf24756ce7f9a0a" 
-        
-        auth_url = "https://openapi.baidu.com/oauth/2.0/token?grant_type=client_credentials&client_id=" + apiKey + "&client_secret=" + secretKey; 
-        
-        res = urllib2.urlopen(auth_url) 
-        json_data = res.read() 
-        return json.loads(json_data)['access_token'] 
-
-    def dump_res(self,buf): 
+    def call_back_func(self,buf): 
         buf = json.loads(buf)
         if buf.get('result'):
             print 'margin : ' + buf.get('result')[0]
+            # 将识别的内容交给【语义理解模块】
+            analysiser = Analysiser()
+            analysiser.do()
         else:
             pass
-        
+    
     def readQ(self,queue):
         val = queue.get(1)
-        return val    
-def start(wav_queue):
-#    translator=TranslatorThread(use_cloud, (),use_cloud.__name__)
-#    translator.setDaemon(True)
-#    translator.start()
-    translator=Translator(wav_queue)
+        return val
+    
+class Voicer (threading.Thread):
+    """docstring for myThread"""
+    def __init__(self):
+        logger.info("初始化Voicer")
+        threading.Thread.__init__(self,content)
+        self.content = content
+        
+    def run(self):
+        self.get_voice(self.content)
+        
+    def voice_back(self,buf):
+        print '================='
+        print buf
+    
+    def get_voice(self,content):
+        """
+        # content  文字
+        """
+        cuid = "xxxxxxxxxx" #my xiaomi phone MAC 
+        srv_url = 'http://tsn.baidu.com/text2audio'
+        token = BaiduApi().get_token()
+        data = '?tex=' + content + '&lan=zh' + '&tok=' + token + '&ctp=1' + '&cuid=' + cuid
+        data_len = len(data)
+        http_header = [ 
+        'Content-Type: text/xml;', 
+        'Content-Length: %d' % data_len
+        ] 
+        # 进行翻译
+        httpRequest.send(srv_url=srv_url,http_header=http_header,call_back_func=self.voice_back,
+                         data=data,data_len=data_len)
+     
+def start(wav_queue,token):
+    translator=Translator(wav_queue,token)
     # 父进程结束时，子进程也结束。
     translator.setDaemon(True)
     translator.start()
