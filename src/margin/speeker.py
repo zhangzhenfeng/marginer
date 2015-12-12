@@ -10,7 +10,7 @@ class Speeker():
         """
         # 根据场景和文字播放语音
         # scene     场景
-        # content   文字
+        # content   文字 
         """
         self.do(content)
     
