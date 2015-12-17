@@ -19,9 +19,9 @@ class Recorder(threading.Thread):
         #record time 
         self.TIME = 2
         # 静音阈值，过滤噪音使用
-        self.LEVEL=200
+        self.LEVEL=500
         # 一帧数据数据的有效数据，也就是一帧数据中有多少大于LEVEL的数
-        self.mute_count_limit=30
+        self.mute_count_limit=50
         self.wav_queue=wav_queue
         self.file_name_index=1
         # 标记是否是静音
@@ -57,7 +57,7 @@ class Recorder(threading.Thread):
             audio_data = np.fromstring(string_audio_data, dtype=np.short)
             # 得到audio_data中大约level的数据个数
             large_sample_count = np.sum( audio_data > self.LEVEL )
-            print large_sample_count
+            #print large_sample_count
             #print 'mute_begin' + str(self.mute_begin)
             #print 'mute_end' + str(self.mute_end)
             #未开始计时，出现静音
@@ -74,7 +74,7 @@ class Recorder(threading.Thread):
                 self.mute_end=1
             count += 1
             # 如果静音时长大于5
-            if (self.mute_end - self.mute_begin) > 2:
+            if (self.mute_end - self.mute_begin) > 3:
                 # 还原变量
                 self.mute_begin=0
                 # 还原变量

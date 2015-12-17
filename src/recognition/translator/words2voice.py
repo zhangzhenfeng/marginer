@@ -34,7 +34,7 @@ class Voicer (threading.Thread):
         self.playMp3()
         
     def build_query_url(self,source, lang):
-        qdict = dict(lan=lang, ie="UTF-8", text=source.encode('utf-8'))
+        qdict = dict(lan=lang, ie="UTF-8", text=source.encode('utf-8'), spd = 6, vol = 2)
         return self.url_gtts + urllib.urlencode(qdict)
     
     def playMp3(self):

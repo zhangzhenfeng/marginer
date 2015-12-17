@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-n()
 from logger import logger
 from recognition.translator.words2voice import Voicer
-#from recognition.translator.aaa import get_word_from_baidu
 
 class Speeker():
     def __init__(self):
@@ -20,6 +19,8 @@ class Speeker():
         # scene     场景
         # content   文字
         """
+        if len(content) > 1024:
+            content = content[:1024]
         #content = "我是一个发明家"
         voicer = Voicer(content)
         # 父进程结束时，子进程也结束。

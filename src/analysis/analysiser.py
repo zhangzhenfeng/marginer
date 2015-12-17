@@ -1,7 +1,9 @@
-# -*- coding: utf-8 -*-n()
+# -*- coding: utf-8 -*-
 from logger import logger
 from margin.speeker import Speeker
 from study.scene.scene import Scene
+from crawlerScript import CrawlerScript
+import os
 """
 # 语义理解模块
 """
@@ -21,4 +23,8 @@ class Analysiser():
         # 调用【机器反馈模块】给以语音的返回。
         speek = Speeker()
         # 语音反馈
-        speek.speek(scener,content)
+        speek.speek(scener,"好的，正在为您查询。")
+        
+        crawler = CrawlerScript()
+        crawler.crawl('dmoz')
+        

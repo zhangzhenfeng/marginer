@@ -5,8 +5,13 @@ from recognition.recorder import recorder
 from recognition.translator import voice2words
 import traceback,sys,Queue,os
 from network.baiduApi import BaiduApi
+from margin.speeker import Speeker
 
 try:
+    
+    speek = Speeker()
+    # 语音反馈
+    speek.speek({},"margin,晚上好。")
     # 获取百度语音的token
     baiduApi = BaiduApi()
     baiduApi.init_token()
