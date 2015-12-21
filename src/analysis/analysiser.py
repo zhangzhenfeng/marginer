@@ -2,7 +2,7 @@
 from logger import logger
 from margin.speeker import Speeker
 from study.scene.scene import Scene
-from crawlerScript import CrawlerScript
+from crawlerScript import spider_working
 import os
 """
 # 语义理解模块
@@ -25,6 +25,5 @@ class Analysiser():
         # 语音反馈
         speek.speek(scener,"好的，正在为您查询。")
         
-        crawler = CrawlerScript()
-        crawler.crawl('dmoz')
+        spider_working('https://zh.wikipedia.org/wiki/%E5%9C%9F%E8%B1%86%E7%BD%91')
         

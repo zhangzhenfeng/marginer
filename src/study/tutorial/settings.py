@@ -13,11 +13,6 @@ BOT_NAME = 'tutorial'
 
 SPIDER_MODULES = ['tutorial.spiders']
 NEWSPIDER_MODULE = 'tutorial.spiders'
-ITEM_PIPELINES = {
-    'myproject.pipelines.PricePipeline': 300,
-    'myproject.pipelines.JsonWriterPipeline': 800,
-}
-
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
