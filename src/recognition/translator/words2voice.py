@@ -9,7 +9,7 @@ from network.httpRequest import HttpRequest
 class Voicer (threading.Thread):
     """docstring for myThread"""
     def __init__(self,content):
-        logger.info("初始化【Voicer】")
+        #logger.info("初始化【Voicer】")
         threading.Thread.__init__(self)
         self.content = content
         self.httpRequest = HttpRequest()

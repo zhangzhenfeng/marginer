@@ -12,7 +12,7 @@ class Translator (threading.Thread) :
         pass
     """docstring for myThread"""
     def __init__(self,wav_queue,token):
-        logger.info("初始化【Translator】")
+        #logger.info("初始化【Translator】")
         threading.Thread.__init__(self)
         self.wav_queue = wav_queue
         self.token = token
@@ -69,4 +69,4 @@ def start(wav_queue,token):
     # 父进程结束时，子进程也结束。
     translator.setDaemon(True)
     translator.start()
-    translator.join()
+    #translator.join()

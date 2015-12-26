@@ -4,7 +4,8 @@ from logger import logger
 
 class HttpRequest():
     def __init__(self):
-        logger.info('初始化【HttpRequest】')
+        pass
+        #logger.info('初始化【HttpRequest】')
     def send(self,srv_url = '',http_header = '',call_back_func = None,data = '',data_len = 0,post=1,connecttimeout=30,timeout=30):
         print '================='
 

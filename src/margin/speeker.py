@@ -4,7 +4,8 @@ from recognition.translator.words2voice import Voicer
 
 class Speeker():
     def __init__(self):
-        logger.info("初始化【Speeker】")
+        pass
+        #logger.info("初始化【Speeker】")
     def speek(self,scene,content):
         """
         # 根据场景和文字播放语音

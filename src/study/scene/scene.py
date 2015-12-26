@@ -3,7 +3,8 @@ from logger import logger
 
 class Scene():
     def __init__(self):
-        logger.info("初始化【Scene】")
+        pass
+        #logger.info("初始化【Scene】")
     def get_scene(self,content):
         """
         # 获取会话场景

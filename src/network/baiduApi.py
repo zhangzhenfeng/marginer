@@ -4,7 +4,7 @@ from logger import logger
 
 class BaiduApi():
     def __init__(self):
-        logger.info('初始化【BaiduApi】')
+        #logger.info('初始化【BaiduApi】')
         self.token = ''
     def init_token(self): 
         apiKey = "Qa6vDpKF8eFiWjXFrC3erMcl" 
