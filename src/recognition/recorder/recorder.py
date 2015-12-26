@@ -9,7 +9,7 @@ import numpy as np
 class Recorder(threading.Thread):
     def __init__(self, wav_queue):
         threading.Thread.__init__(self)
-        logger.info("初始化【Recorder】")
+        #logger.info("初始化【Recorder】")
         #define of params 
         self.NUM_SAMPLES = 2000 
         self.framerate = 8000 
