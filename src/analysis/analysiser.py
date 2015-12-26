@@ -3,7 +3,8 @@ from logger import logger
 from margin.speeker import Speeker
 from study.scene.scene import Scene
 from crawlerScript import spider_working
-import os
+from network.httpRequest import HttpRequest
+import os,json,urllib,urllib2
 from queue import *
 """
 # 语义理解模块
@@ -33,24 +34,40 @@ class Analysiser():
         # 请求图灵机器人返回文字
         self.getTulingMsg(content)
         
-    def getTulingMsg(content):
-        srv_url = 'http://www.tuling123.com/openapi/api' + '?key=' + 'ddd2439e877ff940133c6fbcc0c33613' + '&info=' + content  + '&userid=' +'eb2edb736'
-        http_header = [ 
-        'Content-Type: text/html;', 
-        'Content-Length: %d' % len(content)
-        ] 
-        # 进行翻译
-        httpRequest.send(srv_url=srv_url,http_header=http_header,call_back_func=self.tulingCallBack,
-                         data={},data_len=len(content))
+    def getTulingMsg(self,content):
+        print type(content)
+        if type(content) == unicode:
+            print u'哈哈'
+            content = content.encode('utf8')
+        print type(content)
+        print content
+        param = {'key':'ddd2439e877ff940133c6fbcc0c33613','info':content,'userid':'eb2edb736'}
+        # 获取http服务
+        httpRequest = HttpRequest()
+        srv_url = 'http://www.tuling123.com/openapi/api?' + urllib.urlencode(param)
+#         http_header = [ 
+#         'Content-Type: text/html;', 
+#         'Content-Length: %d' % len(content)
+#         ]
+#         # 进行翻译
+#         httpRequest.send(srv_url=srv_url,http_header=http_header,call_back_func=self.tulingCallBack,
+#                          data=None,connecttimeout=5,post=0,data_len=len(content))
+
+        request = urllib2.Request(srv_url)
+        request.add_header('User-agent', 'Mozilla/5.0')
+        response = urllib2.urlopen(request, timeout=5)
+        print response
+        print u'请求结束'
                          
     def tulingCallBack(self,buf):
+        print  555555555555555555555
         buf = json.loads(buf)
+        print buf
         if buf.get('code'):
             # 调用【机器反馈模块】给以语音的返回。
             speek = Speeker()
             code = buf.get('code')
-            content = buf.get('result')[0]
-            logger.info(('margin : ' + content).encode('utf8'))
+            logger.info(('margin : ' + buf.get('text').encode('utf8')))
             # 将内容说出来
             if code == '100000':
                 # 如果是普通文字
