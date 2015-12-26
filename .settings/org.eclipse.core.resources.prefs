@@ -1,0 +1,16 @@
+eclipse.preferences.version=1
+encoding//src/a.py=utf-8
+encoding//src/analysis/analysiser.py=utf-8
+encoding//src/analysis/crawlerScript.py=utf-8
+encoding//src/logger/logger.py=utf-8
+encoding//src/margin/__init__.py=utf-8
+encoding//src/margin/speeker.py=utf-8
+encoding//src/marginer.py=utf-8
+encoding//src/network/baiduApi.py=utf-8
+encoding//src/network/httpRequest.py=utf-8
+encoding//src/recognition/recorder/recorder.py=utf-8
+encoding//src/recognition/translator/__init__.py=utf-8
+encoding//src/recognition/translator/voice2words.py=utf-8
+encoding//src/recognition/translator/words2voice.py=utf-8
+encoding//src/study/scene/scene.py=utf-8
+encoding//src/study/tutorial/spiders/marginer_spider.py=utf-8

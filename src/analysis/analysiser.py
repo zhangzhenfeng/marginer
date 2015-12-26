@@ -4,6 +4,7 @@ from margin.speeker import Speeker
 from study.scene.scene import Scene
 from crawlerScript import spider_working
 import os
+from queue import *
 """
 # 语义理解模块
 """
@@ -23,7 +24,8 @@ class Analysiser():
         # 调用【机器反馈模块】给以语音的返回。
         speek = Speeker()
         # 语音反馈
-        speek.speek(scener,"好的，正在为您查询。")
+        speek.speek(scener,u"好的，正在为您查询。")
         
-        spider_working('https://zh.wikipedia.org/wiki/%E5%9C%9F%E8%B1%86%E7%BD%91')
+        # 通知爬虫开始查找数据
+        spider_queue.put("https://zh.wikipedia.org/wiki/%E8%8B%B1%E9%9B%84%E8%81%94%E7%9B%9F")
         

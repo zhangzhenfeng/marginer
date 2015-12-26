@@ -10,7 +10,7 @@ import scrapy
 from scrapy.http import Request, HtmlResponse
 from scrapy.linkextractors import LinkExtractor
 
-from tutorial.items import MarginItem as Page
+from study.tutorial.items import MarginItem as Page
 
 
 class FollowAllSpider(scrapy.Spider):
