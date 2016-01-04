@@ -35,12 +35,8 @@ class Analysiser():
         self.getTulingMsg(content)
         
     def getTulingMsg(self,content):
-        print type(content)
         if type(content) == unicode:
-            print u'哈哈'
             content = content.encode('utf8')
-        print type(content)
-        print content
         param = {'key':'ddd2439e877ff940133c6fbcc0c33613','info':content,'userid':'eb2edb736'}
         # 获取http服务
         httpRequest = HttpRequest()
@@ -49,6 +45,8 @@ class Analysiser():
 #         'Content-Type: text/html;', 
 #         'Content-Length: %d' % len(content)
 #         ]
+#         print u'开始请求'
+#         print srv_url
 #         # 进行翻译
 #         httpRequest.send(srv_url=srv_url,http_header=http_header,call_back_func=self.tulingCallBack,
 #                          data=None,connecttimeout=5,post=0,data_len=len(content))
@@ -56,34 +54,31 @@ class Analysiser():
         request = urllib2.Request(srv_url)
         request.add_header('User-agent', 'Mozilla/5.0')
         response = urllib2.urlopen(request, timeout=5)
-        print response
-        print u'请求结束'
+        self.tulingCallBack(response.read())
                          
     def tulingCallBack(self,buf):
-        print  555555555555555555555
         buf = json.loads(buf)
-        print buf
         if buf.get('code'):
             # 调用【机器反馈模块】给以语音的返回。
             speek = Speeker()
             code = buf.get('code')
             logger.info(('margin : ' + buf.get('text').encode('utf8')))
             # 将内容说出来
-            if code == '100000':
+            if code == 100000:
                 # 如果是普通文字
                 # 语音反馈
                 speek.speek({},buf.get('text'))
-            elif code == '200000':
+            elif code == 200000:
                 # 如果是链接类的
                 speek.speek({},u"已经给你找到了以下内容，内容打印在屏幕上了。")
                 logger.info(('margin : ' + buf.get('url')).encode('utf8'))
-            elif code == '302000':
+            elif code == 302000:
                 # 如果是新闻类的
                 speek.speek({},u"已经给你找到了以下内容。")
                 news = [n['article'] for n in buf['list']]
                 speek.speek({},str(news))
                 
-            elif code == '305000':
+            elif code == 305000:
                 # 如果是列车类的
                 msg = [buffer.get('text')]
                 for buffer in buf.get('list'):
@@ -91,14 +86,14 @@ class Analysiser():
                         '，发车时间，' + buffer.get('starttime') + '，到站时间，' + buffer.get('endtime')
                     msg.append(msg_)
                 speek.speek({},str(msg))
-            elif code == '306000':
+            elif code == 306000:
                 # 如果是航班类的
                 msg = [buffer.get('text')]
                 for buffer in buf.get('list'):
                     msg_ = buffer.get('flight') + '，起飞时间，' + buffer.get('starttime') + '，到达时间，' + buffer.get('endtime')
                     msg.append(msg_)
                 speek.speek({},str(msg))
-            elif code == '308000':
+            elif code == 308000:
                 # 如果是菜谱类的
                 msg = [buffer.get('text')]
                 for buffer in buf.get('list'):

@@ -19,7 +19,7 @@ class Recorder(threading.Thread):
         #record time 
         self.TIME = 2
         # 静音阈值，过滤噪音使用
-        self.LEVEL=500
+        self.LEVEL=700
         # 一帧数据数据的有效数据，也就是一帧数据中有多少大于LEVEL的数
         self.mute_count_limit=50
         self.wav_queue=wav_queue

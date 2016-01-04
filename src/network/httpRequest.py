@@ -7,8 +7,8 @@ class HttpRequest():
         pass
         #logger.info('初始化【HttpRequest】')
     def send(self,srv_url = '',http_header = '',call_back_func = None,data = '',data_len = 0,post=1,connecttimeout=30,timeout=30):
-        print '================='
-        print srv_url
+#         print '================='
+#         print srv_url
         c = pycurl.Curl() 
         # 请求的url
         c.setopt(pycurl.URL, str(srv_url)) #curl doesn't support unicode 
@@ -22,6 +22,7 @@ class HttpRequest():
             if data:
                 c.setopt(c.POSTFIELDS, data)
         else:
+            print 'get'
             c.setopt(pycurl.HTTPGET,1) 
         # 超时时间
         c.setopt(c.CONNECTTIMEOUT, connecttimeout) 
