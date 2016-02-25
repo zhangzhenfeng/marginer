@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import base64 ,uuid, os
 import json ,threading,time
-import wave,time,urllib,urllib2,os,sys,pyaudio,mp3play
+import wave,time,urllib,urllib2,os,sys,mp3play
 from logger import logger
 from network.baiduApi import BaiduApi
 from network.httpRequest import HttpRequest
