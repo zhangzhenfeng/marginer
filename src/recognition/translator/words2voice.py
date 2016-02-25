@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import base64 ,uuid, os
 import json ,threading,time
-import wave,time,urllib,urllib2,os,sys,mp3play
+import wave,time,urllib,urllib2,os,sys,platform
+
 from logger import logger
 from network.baiduApi import BaiduApi
 from network.httpRequest import HttpRequest
@@ -40,10 +41,18 @@ class Voicer (threading.Thread):
         return self.url_gtts + urllib.urlencode(qdict)
     
     def playMp3(self,fullpath):
-        mp3 = mp3play.load(fullpath)
-        mp3.play()
-        time.sleep(min(300, mp3.seconds()))    
-        mp3.stop()
+        sysstr = platform.system()
+        if(sysstr =="Windows"):
+            import mp3play
+            mp3 = mp3play.load(fullpath)
+            mp3.play()
+            time.sleep(min(300, mp3.seconds()))    
+            mp3.stop()
+        else:
+            import pygame
+            pygame.mixer.init()
+            track1=pygame.mixer.music.load(fullpath)
+            pygame.mixer.music.play()
         # 删除文件
         os.remove(fullpath)
         
