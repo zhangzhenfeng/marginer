@@ -2,7 +2,7 @@
 from logger import logger
 from margin.speeker import Speeker
 from study.scene.scene import Scene
-from crawlerScript import spider_working
+#from crawlerScript import spider_working
 from network.httpRequest import HttpRequest
 import os,json,urllib,urllib2
 from queue import *
