@@ -22,7 +22,7 @@ class Voicer (threading.Thread):
     
     def get_voice(self,source,lang="zh"):
         filename = str(uuid.uuid1()) + '.mp3'
-        fullpath = 'c:/' + filename
+        fullpath = os.getcwd() + os.sep + filename
 #         if not os.path.isfile(fullpath):
 #             os.mknod(fullpath)
         get_url = self.build_query_url(source, lang)
