@@ -8,7 +8,7 @@ from recognition.translator import voice2words
 import traceback,sys,Queue,os
 from network.baiduApi import BaiduApi
 from margin.speeker import Speeker
-from analysis.crawlerScript import spider_working
+#from analysis.crawlerScript import spider_working
 from queue import *
 from multiprocessing import Process
 
