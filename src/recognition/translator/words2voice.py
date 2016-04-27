@@ -6,6 +6,7 @@ import wave,time,urllib,urllib2,os,sys,platform
 from logger import logger
 from network.baiduApi import BaiduApi
 from network.httpRequest import HttpRequest
+from util.file_util import get_setting_config
 
 class Voicer (threading.Thread):
     """docstring for myThread"""
@@ -37,7 +38,9 @@ class Voicer (threading.Thread):
         self.playMp3(fullpath)
         
     def build_query_url(self,source, lang):
-        qdict = dict(lan=lang, ie="UTF-8", text=source.encode('utf-8'), spd = 6, vol = 2)
+        # 获取音量和语速
+        config_dic = get_setting_config("setting.config")
+        qdict = dict(lan=lang, ie="UTF-8", text=source.encode('utf-8'), spd = config_dic.get('speed'), vol = config_dic.get('voice'))
         return self.url_gtts + urllib.urlencode(qdict)
     
     def playMp3(self,fullpath):

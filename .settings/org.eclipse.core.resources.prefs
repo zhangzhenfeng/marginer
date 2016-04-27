@@ -14,3 +14,4 @@ encoding//src/recognition/translator/voice2words.py=utf-8
 encoding//src/recognition/translator/words2voice.py=utf-8
 encoding//src/study/scene/scene.py=utf-8
 encoding//src/study/tutorial/spiders/marginer_spider.py=utf-8
+encoding//src/util/file_util.py=utf-8
