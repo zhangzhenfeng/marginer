@@ -26,7 +26,7 @@ class Analysiser():
         # 调用【机器反馈模块】给以语音的返回。
         speek = Speeker()
         # 语音反馈
-        speek.speek(scener,u"好的，正在为您查询。")
+        #speek.speek(scener,u"好的，正在为您查询。")
         
         # 通知爬虫开始查找数据
         #spider_queue.put("https://zh.wikipedia.org/wiki/%E8%8B%B1%E9%9B%84%E8%81%94%E7%9B%9F")
