@@ -3,6 +3,7 @@ from logger import logger
 from margin.speeker import Speeker
 from study.scene.scene import Scene
 #from crawlerScript import spider_working
+from execute.local_worker import LocalWorker
 from network.httpRequest import HttpRequest
 import os,json,urllib,urllib2
 from queue import *
@@ -11,7 +12,7 @@ from queue import *
 """
 class Analysiser():
     def __init__(self):
-        pass
+        self.local_worker = LocalWorker()
         #logger.info("初始化【Analysiser】")
     def do(self,content):
         """
@@ -23,16 +24,12 @@ class Analysiser():
         scene = Scene()
         # 场景
         scener = scene.get_scene(content)
-        # 调用【机器反馈模块】给以语音的返回。
-        speek = Speeker()
-        # 语音反馈
-        #speek.speek(scener,u"好的，正在为您查询。")
-        
-        # 通知爬虫开始查找数据
-        #spider_queue.put("https://zh.wikipedia.org/wiki/%E8%8B%B1%E9%9B%84%E8%81%94%E7%9B%9F")
-        
-        # 请求图灵机器人返回文字
-        self.getTulingMsg(content)
+        if not scener.get("scene_local"):
+            # 请求图灵机器人返回文字
+            self.getTulingMsg(content)
+        else:
+            # 如果是本地语音场景，则调用本地应用。
+            self.local_worker.handle(scener)
         
     def getTulingMsg(self,content):
         if type(content) == unicode:
