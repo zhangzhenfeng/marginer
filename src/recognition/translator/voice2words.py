@@ -52,8 +52,9 @@ class Translator (threading.Thread) :
             content = buf.get('result')[0]
             logger.info(('margin : ' + content).encode('utf8'))
             # 将识别的内容交给【语义理解模块】
-            analysiser = Analysiser()
-            analysiser.do(content)
+            analysiser = Analysiser(content)
+            analysiser.setDaemon(True)
+            analysiser.start()
         else:
             pass
     

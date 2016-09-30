@@ -5,14 +5,18 @@ from study.scene.scene import Scene
 #from crawlerScript import spider_working
 from execute.local_worker import LocalWorker
 from network.httpRequest import HttpRequest
-import os,json,urllib,urllib2
+import os,json,urllib,urllib2,threading
 from queue import *
 """
 # 语义理解模块
 """
-class Analysiser():
+class Analysiser(threading.Thread):
     def __init__(self):
+        pass
+    def __init__(self,content):
+        threading.Thread.__init__(self)
         self.local_worker = LocalWorker()
+        self.content = content
         #logger.info("初始化【Analysiser】")
     def do(self,content):
         """
@@ -52,7 +56,9 @@ class Analysiser():
         request.add_header('User-agent', 'Mozilla/5.0')
         response = urllib2.urlopen(request, timeout=5)
         self.tulingCallBack(response.read())
-                         
+    def run(self):
+        self.do(self.content)
+                             
     def tulingCallBack(self,buf):
         buf = json.loads(buf)
         if buf.get('code'):
