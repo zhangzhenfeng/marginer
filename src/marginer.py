@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# 录音模块
+# 录音模块1
 from recognition.recorder import recorder
 from analysis.analysiser import Analysiser
 from logger import logger
